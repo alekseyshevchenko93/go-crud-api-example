@@ -1,5 +1,5 @@
 APP_NAME=crud-api
-SRC=./main.go
+SRC=./cmd/server/server.go
 BUILD_DIR=./build
 MOCKERY := mockery
 
