@@ -89,6 +89,10 @@ func (s *PortfolioService) UpdatePortfolio(id string, body requests.UpdatePortfo
 	updatedPortfolio, err := s.portfolioRepository.UpdatePortfolio(portfolio)
 
 	if err != nil {
+		if errors.Is(err, repository.ErrPortfolioAlreadyExists) {
+			return models.Portfolio{}, echo.NewHTTPError(http.StatusConflict, "Portfolio with this name already exists")
+		}
+
 		return models.Portfolio{}, err
 	}
 
