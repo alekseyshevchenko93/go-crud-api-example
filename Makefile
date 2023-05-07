@@ -13,7 +13,7 @@ build:
 	@go build -o $(BUILD_DIR)/$(APP_NAME) $(SRC)
 
 run: build
-	${BUILD_DIR}/$(APP_NAME)
+	source .env && ${BUILD_DIR}/$(APP_NAME)
 
 mocks:
 	mockery --name PortfolioRepository --dir repository --output repository/mocks
