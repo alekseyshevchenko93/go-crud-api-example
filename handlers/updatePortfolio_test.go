@@ -11,6 +11,7 @@ import (
 
 	"github.com/alekseyshevchenko93/go-crud-api-example/domain/models"
 	requests "github.com/alekseyshevchenko93/go-crud-api-example/domain/requests"
+	"github.com/alekseyshevchenko93/go-crud-api-example/repository"
 	mocks "github.com/alekseyshevchenko93/go-crud-api-example/repository/mocks"
 	"github.com/alekseyshevchenko93/go-crud-api-example/services"
 	"github.com/labstack/echo/v4"
@@ -168,9 +169,8 @@ func TestUpdatePortfolioConflict(t *testing.T) {
 		UpdatedAt:  &createdAt,
 	}
 
-	responseErr := echo.NewHTTPError(http.StatusConflict)
 	porfoliosRepository.EXPECT().GetPortfolioById(portfolioIdStr).Return(portfolio, nil).Once()
-	porfoliosRepository.EXPECT().UpdatePortfolio(portfolio).Return(models.Portfolio{}, responseErr).Once()
+	porfoliosRepository.EXPECT().UpdatePortfolio(portfolio).Return(models.Portfolio{}, repository.ErrPortfolioAlreadyExists).Once()
 	bodyJson, _ := json.Marshal(requestBody)
 	req := httptest.NewRequest(http.MethodPut, "/", bytes.NewReader(bodyJson))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
@@ -184,6 +184,7 @@ func TestUpdatePortfolioConflict(t *testing.T) {
 
 	assert.Error(t, err)
 	httpError, ok := err.(*echo.HTTPError)
+
 	assert.True(t, ok)
 	assert.Equal(t, httpError.Code, http.StatusConflict)
 }

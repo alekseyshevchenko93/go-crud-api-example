@@ -10,6 +10,7 @@ import (
 
 	"github.com/alekseyshevchenko93/go-crud-api-example/domain/models"
 	requests "github.com/alekseyshevchenko93/go-crud-api-example/domain/requests"
+	"github.com/alekseyshevchenko93/go-crud-api-example/repository"
 	mocks "github.com/alekseyshevchenko93/go-crud-api-example/repository/mocks"
 	"github.com/alekseyshevchenko93/go-crud-api-example/services"
 	"github.com/labstack/echo/v4"
@@ -88,8 +89,7 @@ func TestCreatePortfolioConflict(t *testing.T) {
 		Name:     "portfolio",
 		IsActive: true,
 	}
-	responseErr := echo.NewHTTPError(http.StatusConflict)
-	porfoliosRepository.EXPECT().CreatePortfolio(requestBody).Return(models.Portfolio{}, responseErr).Once()
+	porfoliosRepository.EXPECT().CreatePortfolio(requestBody).Return(models.Portfolio{}, repository.ErrPortfolioAlreadyExists).Once()
 	bodyJson, _ := json.Marshal(requestBody)
 	req := httptest.NewRequest(http.MethodPost, "/", bytes.NewReader(bodyJson))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
