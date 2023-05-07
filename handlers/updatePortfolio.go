@@ -18,7 +18,7 @@ func NewUpdatePortfolioHandler(portfolioService PortfolioUpdater) func(echo.Cont
 		id := ctx.Param("id")
 
 		if err := ctx.Bind(&body); err != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, "invalid json body")
+			return echo.NewHTTPError(http.StatusBadRequest, "Invalid json body")
 		}
 
 		portfolio, err := portfolioService.UpdatePortfolio(id, body)

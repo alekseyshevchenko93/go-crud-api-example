@@ -17,7 +17,7 @@ func NewCreatePortfolioHandler(portfolioService PortfolioCreater) func(echo.Cont
 		body := requests.CreatePortfolioRequest{}
 
 		if err := ctx.Bind(&body); err != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, "invalid json body")
+			return echo.NewHTTPError(http.StatusBadRequest, "Invalid json body")
 		}
 
 		portfolio, err := portfolioService.CreatePortfolio(body)
