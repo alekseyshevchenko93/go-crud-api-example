@@ -5,8 +5,6 @@ MOCKERY := mockery
 
 .PHONY: mocks
 
-all: build
-
 build:
 	@echo "Building $(APP_NAME)..."
 	@mkdir -p $(BUILD_DIR)
