@@ -6,9 +6,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/alekseyshevchenko93/go-crud-api-example/domain/models"
-	mocks "github.com/alekseyshevchenko93/go-crud-api-example/repository/mocks"
-	"github.com/alekseyshevchenko93/go-crud-api-example/services"
+	"github.com/alekseyshevchenko93/go-crud-api-example/internal/domain/models"
+	mocks "github.com/alekseyshevchenko93/go-crud-api-example/internal/repository/mocks"
+	"github.com/alekseyshevchenko93/go-crud-api-example/internal/services"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )

@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/alekseyshevchenko93/go-crud-api-example/domain/models"
+	"github.com/alekseyshevchenko93/go-crud-api-example/internal/domain/models"
 	"github.com/labstack/echo/v4"
 )
 

@@ -14,7 +14,7 @@ run: build
 	source .env && ${BUILD_DIR}/$(APP_NAME)
 
 mocks:
-	mockery --name PortfolioRepository --dir repository --output repository/mocks
+	mockery --name PortfolioRepository --dir internal/repository --output internal/repository/mocks
 
 tests:
 	go test ./.../

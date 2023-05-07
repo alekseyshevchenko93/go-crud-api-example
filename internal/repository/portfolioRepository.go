@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/alekseyshevchenko93/go-crud-api-example/domain/models"
-	requests "github.com/alekseyshevchenko93/go-crud-api-example/domain/requests"
+	"github.com/alekseyshevchenko93/go-crud-api-example/internal/domain/models"
+	requests "github.com/alekseyshevchenko93/go-crud-api-example/internal/domain/requests"
 )
 
 type portfolioRepository struct {

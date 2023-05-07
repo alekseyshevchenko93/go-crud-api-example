@@ -9,11 +9,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alekseyshevchenko93/go-crud-api-example/domain/models"
-	requests "github.com/alekseyshevchenko93/go-crud-api-example/domain/requests"
-	"github.com/alekseyshevchenko93/go-crud-api-example/repository"
-	mocks "github.com/alekseyshevchenko93/go-crud-api-example/repository/mocks"
-	"github.com/alekseyshevchenko93/go-crud-api-example/services"
+	"github.com/alekseyshevchenko93/go-crud-api-example/internal/domain/models"
+	requests "github.com/alekseyshevchenko93/go-crud-api-example/internal/domain/requests"
+	"github.com/alekseyshevchenko93/go-crud-api-example/internal/repository"
+	mocks "github.com/alekseyshevchenko93/go-crud-api-example/internal/repository/mocks"
+	"github.com/alekseyshevchenko93/go-crud-api-example/internal/services"
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )

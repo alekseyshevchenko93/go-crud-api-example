@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/alekseyshevchenko93/go-crud-api-example/domain/models"
-	requests "github.com/alekseyshevchenko93/go-crud-api-example/domain/requests"
-	"github.com/alekseyshevchenko93/go-crud-api-example/repository"
+	"github.com/alekseyshevchenko93/go-crud-api-example/internal/domain/models"
+	requests "github.com/alekseyshevchenko93/go-crud-api-example/internal/domain/requests"
+	"github.com/alekseyshevchenko93/go-crud-api-example/internal/repository"
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
 )

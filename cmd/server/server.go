@@ -7,11 +7,11 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/alekseyshevchenko93/go-crud-api-example/config"
-	"github.com/alekseyshevchenko93/go-crud-api-example/handlers"
-	"github.com/alekseyshevchenko93/go-crud-api-example/middlewares"
-	"github.com/alekseyshevchenko93/go-crud-api-example/repository"
-	"github.com/alekseyshevchenko93/go-crud-api-example/services"
+	"github.com/alekseyshevchenko93/go-crud-api-example/internal/config"
+	"github.com/alekseyshevchenko93/go-crud-api-example/internal/handlers"
+	"github.com/alekseyshevchenko93/go-crud-api-example/internal/middlewares"
+	"github.com/alekseyshevchenko93/go-crud-api-example/internal/repository"
+	"github.com/alekseyshevchenko93/go-crud-api-example/internal/services"
 	"github.com/labstack/echo/v4"
 )
 
