@@ -18,6 +18,9 @@ run: build
 mocks:
 	mockery --name PortfolioRepository --dir repository --output repository/mocks
 
+tests:
+	go test ./.../
+
 clean:
 	@echo "Cleaning up..."
 	@rm -rf $(BUILD_DIR)
