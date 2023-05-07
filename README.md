@@ -1,9 +1,10 @@
 ## CRUD API unit-testing example
 
 Example API built with:
-- labstack/echo as web framework
-- go-playground/validator for validation
-- stretchr/testify for testing
+- [Echo](https://echo.labstack.com/) as web framework
+- [tesidy](https://github.com/stretchr/testify) for testing
+- [Mockery](https://vektra.github.io/mockery) for mock generation
+- [go-playground/validator](https://github.com/go-playground/validator) for input validation
 
 ## Installation
 Install go dependencies:
