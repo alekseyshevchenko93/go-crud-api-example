@@ -2,5 +2,3 @@ inpackage: False
 testonly: False
 with-expecter: True
 keeptree: False
-
-# mockery --name PortfolioRepository
