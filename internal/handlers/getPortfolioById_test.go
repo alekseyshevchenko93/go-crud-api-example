@@ -7,90 +7,99 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/alekseyshevchenko93/go-crud-api-example/internal/domain/models"
 	"github.com/alekseyshevchenko93/go-crud-api-example/internal/repository"
 	mocks "github.com/alekseyshevchenko93/go-crud-api-example/internal/repository/mocks"
 	"github.com/alekseyshevchenko93/go-crud-api-example/internal/services"
+	"github.com/alekseyshevchenko93/go-crud-api-example/test/factories"
 	"github.com/labstack/echo/v4"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestGetPortfolioByIdSuccess(t *testing.T) {
+type GetPortfolioByIdSuite struct {
+	suite.Suite
+	portfolioRepository *mocks.PortfolioRepository
+	portfolioService    services.PortfolioService
+	e                   *echo.Echo
+}
+
+func TestGetPortfolioByIdSuite(t *testing.T) {
+	suite.Run(t, new(GetPortfolioByIdSuite))
+}
+
+func (suite *GetPortfolioByIdSuite) SetupSuite() {
+	t := suite.T()
 	e := echo.New()
-	portfolioRepository := mocks.NewPortfolioRepository(t)
-	portfolioService := services.NewPortfolioService(portfolioRepository)
-	handler := NewGetPortfolioByIdHandler(portfolioService)
-	portfolioId := 10
-	portfolioIdStr := fmt.Sprintf("%d", portfolioId)
+	porftolioRepository := mocks.NewPortfolioRepository(t)
+	portfolioService := services.NewPortfolioService(porftolioRepository)
 
-	portfolio := models.Portfolio{
-		Name:       "mock-portfolio",
-		IsActive:   true,
-		IsFinance:  false,
-		IsInternal: false,
-	}
+	suite.e = e
+	suite.portfolioRepository = porftolioRepository
+	suite.portfolioService = portfolioService
+}
 
-	portfolioRepository.EXPECT().GetPortfolioById(portfolioId).Return(&portfolio, nil).Once()
+func (suite *GetPortfolioByIdSuite) TestGetPortfolioByIdSuccess() {
+	r := suite.Require()
+	handler := NewGetPortfolioByIdHandler(suite.portfolioService)
+	portfolio := factories.GetPortfolio()
+	portfolioIdStr := fmt.Sprintf("%d", portfolio.Id)
+
+	suite.portfolioRepository.EXPECT().GetPortfolioById(portfolio.Id).Return(portfolio, nil).Once()
 	portfolioJson, _ := json.Marshal(portfolio)
 
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	rec := httptest.NewRecorder()
-	ctx := e.NewContext(req, rec)
+	ctx := suite.e.NewContext(req, rec)
 	ctx.SetPath("/portfolios/:id")
 	ctx.SetParamNames("id")
 	ctx.SetParamValues(portfolioIdStr)
 
 	err := handler(ctx)
 
-	assert.NoError(t, err)
-	assert.Contains(t, rec.Body.String(), string(portfolioJson))
+	r.NoError(err)
+	r.Contains(rec.Body.String(), string(portfolioJson))
 }
 
-func TestGetPortfolioByIdBadRequest(t *testing.T) {
-	e := echo.New()
-	portfolioRepository := mocks.NewPortfolioRepository(t)
-	portfolioService := services.NewPortfolioService(portfolioRepository)
-	handler := NewGetPortfolioByIdHandler(portfolioService)
+func (suite *GetPortfolioByIdSuite) TestGetPortfolioByIdBadRequest() {
+	r := suite.Require()
+	handler := NewGetPortfolioByIdHandler(suite.portfolioService)
 	tt := []string{"string-instead-of-id", "#$(*)@", ""}
 
 	for _, portfolioId := range tt {
 		req := httptest.NewRequest(http.MethodGet, "/", nil)
 		rec := httptest.NewRecorder()
-		ctx := e.NewContext(req, rec)
+		ctx := suite.e.NewContext(req, rec)
 		ctx.SetPath("/portfolios/:id")
 		ctx.SetParamNames("id")
 		ctx.SetParamValues(portfolioId)
 
 		err := handler(ctx)
 
-		assert.Error(t, err)
+		r.Error(err)
 		httpError, ok := err.(*echo.HTTPError)
-		assert.True(t, ok)
-		assert.Equal(t, httpError.Code, http.StatusBadRequest)
+		r.True(ok)
+		r.Equal(httpError.Code, http.StatusBadRequest)
 	}
 }
 
-func TestGetPortfolioByIdNotFound(t *testing.T) {
-	e := echo.New()
-	portfolioRepository := mocks.NewPortfolioRepository(t)
-	portfolioService := services.NewPortfolioService(portfolioRepository)
-	portfolioId := 1
-	portfolioIdStr := fmt.Sprintf("%d", portfolioId)
-	portfolioRepository.EXPECT().GetPortfolioById(portfolioId).Return(nil, repository.ErrPortfolioNotFound).Once()
+func (suite *GetPortfolioByIdSuite) TestGetPortfolioByIdNotFound() {
+	r := suite.Require()
+	handler := NewGetPortfolioByIdHandler(suite.portfolioService)
+	portfolio := factories.GetPortfolio()
+	portfolioIdStr := fmt.Sprintf("%d", portfolio.Id)
 
-	handler := NewGetPortfolioByIdHandler(portfolioService)
+	suite.portfolioRepository.EXPECT().GetPortfolioById(portfolio.Id).Return(nil, repository.ErrPortfolioNotFound).Once()
 
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	rec := httptest.NewRecorder()
-	ctx := e.NewContext(req, rec)
+	ctx := suite.e.NewContext(req, rec)
 	ctx.SetPath("/portfolios/:id")
 	ctx.SetParamNames("id")
 	ctx.SetParamValues(portfolioIdStr)
 
 	err := handler(ctx)
 
-	assert.Error(t, err)
+	r.Error(err)
 	httpError, ok := err.(*echo.HTTPError)
-	assert.True(t, ok)
-	assert.Equal(t, httpError.Code, http.StatusNotFound)
+	r.True(ok)
+	r.Equal(httpError.Code, http.StatusNotFound)
 }
