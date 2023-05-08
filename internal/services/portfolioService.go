@@ -57,7 +57,9 @@ func (s *portfolioService) GetPortfolioById(id string) (models.Portfolio, error)
 		return models.Portfolio{}, err
 	}
 
-	portfolio, err := s.portfolioRepository.GetPortfolioById(id)
+	idInt, _ := strconv.Atoi(id)
+
+	portfolio, err := s.portfolioRepository.GetPortfolioById(idInt)
 
 	if err != nil {
 		if errors.Is(err, repository.ErrPortfolioNotFound) {
@@ -79,7 +81,8 @@ func (s *portfolioService) UpdatePortfolio(id string, body requests.UpdatePortfo
 		return models.Portfolio{}, err
 	}
 
-	portfolio, err := s.portfolioRepository.GetPortfolioById(id)
+	idInt, _ := strconv.Atoi(id)
+	portfolio, err := s.portfolioRepository.GetPortfolioById(idInt)
 
 	if err != nil {
 		if errors.Is(err, repository.ErrPortfolioNotFound) {
@@ -112,7 +115,8 @@ func (s *portfolioService) DeletePortfolio(id string) error {
 		return err
 	}
 
-	_, err := s.portfolioRepository.GetPortfolioById(id)
+	idInt, _ := strconv.Atoi(id)
+	_, err := s.portfolioRepository.GetPortfolioById(idInt)
 
 	if err != nil {
 		if errors.Is(err, repository.ErrPortfolioNotFound) {
@@ -122,7 +126,7 @@ func (s *portfolioService) DeletePortfolio(id string) error {
 		return err
 	}
 
-	if err := s.portfolioRepository.DeletePortfolio(id); err != nil {
+	if err := s.portfolioRepository.DeletePortfolio(idInt); err != nil {
 		return err
 	}
 

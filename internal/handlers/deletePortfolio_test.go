@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -18,7 +19,9 @@ func TestDeletePortfolioSuccess(t *testing.T) {
 	e := echo.New()
 	porfoliosRepository := mocks.NewPortfolioRepository(t)
 	portfolioService := services.NewPortfolioService(porfoliosRepository)
-	portfolioId := "1"
+	portfolioId := 1
+	portfolioIdStr := fmt.Sprintf("%d", portfolioId)
+
 	response := models.Portfolio{
 		Name:      "Alex",
 		IsActive:  true,
@@ -33,7 +36,7 @@ func TestDeletePortfolioSuccess(t *testing.T) {
 	ctx := e.NewContext(req, rec)
 	ctx.SetPath("/portfolios/:id")
 	ctx.SetParamNames("id")
-	ctx.SetParamValues(portfolioId)
+	ctx.SetParamValues(portfolioIdStr)
 
 	err := handler(ctx)
 
@@ -68,7 +71,8 @@ func TestDeletePortfolioNotFound(t *testing.T) {
 	e := echo.New()
 	porfoliosRepository := mocks.NewPortfolioRepository(t)
 	portfolioService := services.NewPortfolioService(porfoliosRepository)
-	portfolioId := "1"
+	portfolioId := 1
+	portfolioIdStr := fmt.Sprintf("%d", portfolioId)
 	porfoliosRepository.EXPECT().GetPortfolioById(portfolioId).Return(models.Portfolio{}, repository.ErrPortfolioNotFound).Once()
 
 	handler := NewDeletePortfolioHandler(portfolioService)
@@ -77,7 +81,7 @@ func TestDeletePortfolioNotFound(t *testing.T) {
 	ctx := e.NewContext(req, rec)
 	ctx.SetPath("/portfolios/:id")
 	ctx.SetParamNames("id")
-	ctx.SetParamValues(portfolioId)
+	ctx.SetParamValues(portfolioIdStr)
 
 	err := handler(ctx)
 

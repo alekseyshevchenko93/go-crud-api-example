@@ -2,7 +2,6 @@ package repository
 
 import (
 	"errors"
-	"strconv"
 	"sync"
 	"time"
 
@@ -24,10 +23,10 @@ var (
 //go:generate mockery --name PortfolioRepository
 type PortfolioRepository interface {
 	GetPortfolios() ([]models.Portfolio, error)
-	GetPortfolioById(string) (models.Portfolio, error)
+	GetPortfolioById(int) (models.Portfolio, error)
 	CreatePortfolio(requests.CreatePortfolioRequest) (models.Portfolio, error)
 	UpdatePortfolio(models.Portfolio) (models.Portfolio, error)
-	DeletePortfolio(string) error
+	DeletePortfolio(int) error
 }
 
 func (p *portfolioRepository) GetPortfolios() ([]models.Portfolio, error) {
@@ -74,12 +73,11 @@ func (p *portfolioRepository) CreatePortfolio(body requests.CreatePortfolioReque
 	return model, nil
 }
 
-func (p *portfolioRepository) GetPortfolioById(id string) (models.Portfolio, error) {
+func (p *portfolioRepository) GetPortfolioById(id int) (models.Portfolio, error) {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
 
-	idInt, _ := strconv.Atoi(id)
-	model, ok := p.storage[idInt]
+	model, ok := p.storage[id]
 
 	if !ok {
 		return models.Portfolio{}, ErrPortfolioNotFound
@@ -88,16 +86,15 @@ func (p *portfolioRepository) GetPortfolioById(id string) (models.Portfolio, err
 	return model, nil
 }
 
-func (p *portfolioRepository) DeletePortfolio(id string) error {
+func (p *portfolioRepository) DeletePortfolio(id int) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
-	idInt, _ := strconv.Atoi(id)
-	if _, ok := p.storage[idInt]; !ok {
+	if _, ok := p.storage[id]; !ok {
 		return ErrPortfolioNotFound
 	}
 
-	delete(p.storage, idInt)
+	delete(p.storage, id)
 
 	return nil
 }

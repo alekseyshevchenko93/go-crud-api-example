@@ -75,11 +75,11 @@ func (_c *PortfolioRepository_CreatePortfolio_Call) RunAndReturn(run func(domain
 }
 
 // DeletePortfolio provides a mock function with given fields: _a0
-func (_m *PortfolioRepository) DeletePortfolio(_a0 string) error {
+func (_m *PortfolioRepository) DeletePortfolio(_a0 int) error {
 	ret := _m.Called(_a0)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(string) error); ok {
+	if rf, ok := ret.Get(0).(func(int) error); ok {
 		r0 = rf(_a0)
 	} else {
 		r0 = ret.Error(0)
@@ -94,14 +94,14 @@ type PortfolioRepository_DeletePortfolio_Call struct {
 }
 
 // DeletePortfolio is a helper method to define mock.On call
-//   - _a0 string
+//   - _a0 int
 func (_e *PortfolioRepository_Expecter) DeletePortfolio(_a0 interface{}) *PortfolioRepository_DeletePortfolio_Call {
 	return &PortfolioRepository_DeletePortfolio_Call{Call: _e.mock.On("DeletePortfolio", _a0)}
 }
 
-func (_c *PortfolioRepository_DeletePortfolio_Call) Run(run func(_a0 string)) *PortfolioRepository_DeletePortfolio_Call {
+func (_c *PortfolioRepository_DeletePortfolio_Call) Run(run func(_a0 int)) *PortfolioRepository_DeletePortfolio_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string))
+		run(args[0].(int))
 	})
 	return _c
 }
@@ -111,27 +111,27 @@ func (_c *PortfolioRepository_DeletePortfolio_Call) Return(_a0 error) *Portfolio
 	return _c
 }
 
-func (_c *PortfolioRepository_DeletePortfolio_Call) RunAndReturn(run func(string) error) *PortfolioRepository_DeletePortfolio_Call {
+func (_c *PortfolioRepository_DeletePortfolio_Call) RunAndReturn(run func(int) error) *PortfolioRepository_DeletePortfolio_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetPortfolioById provides a mock function with given fields: _a0
-func (_m *PortfolioRepository) GetPortfolioById(_a0 string) (models.Portfolio, error) {
+func (_m *PortfolioRepository) GetPortfolioById(_a0 int) (models.Portfolio, error) {
 	ret := _m.Called(_a0)
 
 	var r0 models.Portfolio
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (models.Portfolio, error)); ok {
+	if rf, ok := ret.Get(0).(func(int) (models.Portfolio, error)); ok {
 		return rf(_a0)
 	}
-	if rf, ok := ret.Get(0).(func(string) models.Portfolio); ok {
+	if rf, ok := ret.Get(0).(func(int) models.Portfolio); ok {
 		r0 = rf(_a0)
 	} else {
 		r0 = ret.Get(0).(models.Portfolio)
 	}
 
-	if rf, ok := ret.Get(1).(func(string) error); ok {
+	if rf, ok := ret.Get(1).(func(int) error); ok {
 		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)
@@ -146,14 +146,14 @@ type PortfolioRepository_GetPortfolioById_Call struct {
 }
 
 // GetPortfolioById is a helper method to define mock.On call
-//   - _a0 string
+//   - _a0 int
 func (_e *PortfolioRepository_Expecter) GetPortfolioById(_a0 interface{}) *PortfolioRepository_GetPortfolioById_Call {
 	return &PortfolioRepository_GetPortfolioById_Call{Call: _e.mock.On("GetPortfolioById", _a0)}
 }
 
-func (_c *PortfolioRepository_GetPortfolioById_Call) Run(run func(_a0 string)) *PortfolioRepository_GetPortfolioById_Call {
+func (_c *PortfolioRepository_GetPortfolioById_Call) Run(run func(_a0 int)) *PortfolioRepository_GetPortfolioById_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(string))
+		run(args[0].(int))
 	})
 	return _c
 }
@@ -163,7 +163,7 @@ func (_c *PortfolioRepository_GetPortfolioById_Call) Return(_a0 models.Portfolio
 	return _c
 }
 
-func (_c *PortfolioRepository_GetPortfolioById_Call) RunAndReturn(run func(string) (models.Portfolio, error)) *PortfolioRepository_GetPortfolioById_Call {
+func (_c *PortfolioRepository_GetPortfolioById_Call) RunAndReturn(run func(int) (models.Portfolio, error)) *PortfolioRepository_GetPortfolioById_Call {
 	_c.Call.Return(run)
 	return _c
 }
