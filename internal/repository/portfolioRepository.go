@@ -3,6 +3,7 @@ package repository
 import (
 	"errors"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/alekseyshevchenko93/go-crud-api-example/internal/domain/models"
@@ -12,6 +13,7 @@ import (
 type portfolioRepository struct {
 	storage map[int]models.Portfolio
 	counter int
+	mu      sync.RWMutex
 }
 
 var (
@@ -29,6 +31,9 @@ type PortfolioRepository interface {
 }
 
 func (p *portfolioRepository) GetPortfolios() ([]models.Portfolio, error) {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+
 	items := make([]models.Portfolio, 0, len(p.storage))
 
 	for _, v := range p.storage {
@@ -39,6 +44,9 @@ func (p *portfolioRepository) GetPortfolios() ([]models.Portfolio, error) {
 }
 
 func (p *portfolioRepository) CreatePortfolio(body requests.CreatePortfolioRequest) (models.Portfolio, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+
 	name := body.Name
 
 	for _, v := range p.storage {
@@ -67,6 +75,9 @@ func (p *portfolioRepository) CreatePortfolio(body requests.CreatePortfolioReque
 }
 
 func (p *portfolioRepository) GetPortfolioById(id string) (models.Portfolio, error) {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+
 	idInt, _ := strconv.Atoi(id)
 	model, ok := p.storage[idInt]
 
@@ -78,6 +89,9 @@ func (p *portfolioRepository) GetPortfolioById(id string) (models.Portfolio, err
 }
 
 func (p *portfolioRepository) DeletePortfolio(id string) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+
 	idInt, _ := strconv.Atoi(id)
 	if _, ok := p.storage[idInt]; !ok {
 		return ErrPortfolioNotFound
@@ -89,6 +103,9 @@ func (p *portfolioRepository) DeletePortfolio(id string) error {
 }
 
 func (p *portfolioRepository) UpdatePortfolio(model models.Portfolio) (models.Portfolio, error) {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+
 	for _, v := range p.storage {
 		if v.Name == model.Name && v.Id != model.Id {
 			return models.Portfolio{}, ErrPortfolioAlreadyExists
