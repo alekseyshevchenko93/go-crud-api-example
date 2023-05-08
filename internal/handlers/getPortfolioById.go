@@ -3,15 +3,11 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/alekseyshevchenko93/go-crud-api-example/internal/domain/models"
+	"github.com/alekseyshevchenko93/go-crud-api-example/internal/services"
 	"github.com/labstack/echo/v4"
 )
 
-type PortfolioByIdGetter interface {
-	GetPortfolioById(string) (models.Portfolio, error)
-}
-
-func NewGetPortfolioByIdHandler(portfolioService PortfolioByIdGetter) func(echo.Context) error {
+func NewGetPortfolioByIdHandler(portfolioService services.PortfolioService) func(echo.Context) error {
 	return func(ctx echo.Context) error {
 		id := ctx.Param("id")
 		portfolio, err := portfolioService.GetPortfolioById(id)

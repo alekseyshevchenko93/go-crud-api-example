@@ -12,12 +12,20 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type PortfolioService struct {
+type PortfolioService interface {
+	CreatePortfolio(requests.CreatePortfolioRequest) (models.Portfolio, error)
+	UpdatePortfolio(string, requests.UpdatePortfolioRequest) (models.Portfolio, error)
+	GetPortfolios() ([]models.Portfolio, error)
+	GetPortfolioById(string) (models.Portfolio, error)
+	DeletePortfolio(string) error
+}
+
+type portfolioService struct {
 	portfolioRepository repository.PortfolioRepository
 }
 
-func (s *PortfolioService) CreatePortfolio(body requests.CreatePortfolioRequest) (models.Portfolio, error) {
-	if err := s.ValidatePortfolioCreateRequest(body); err != nil {
+func (s *portfolioService) CreatePortfolio(body requests.CreatePortfolioRequest) (models.Portfolio, error) {
+	if err := s.validatePortfolioCreateRequest(body); err != nil {
 		return models.Portfolio{}, err
 	}
 
@@ -34,7 +42,7 @@ func (s *PortfolioService) CreatePortfolio(body requests.CreatePortfolioRequest)
 	return portfolio, nil
 }
 
-func (s *PortfolioService) GetPortfolios() ([]models.Portfolio, error) {
+func (s *portfolioService) GetPortfolios() ([]models.Portfolio, error) {
 	portfolios, err := s.portfolioRepository.GetPortfolios()
 
 	if err != nil {
@@ -44,8 +52,8 @@ func (s *PortfolioService) GetPortfolios() ([]models.Portfolio, error) {
 	return portfolios, nil
 }
 
-func (s *PortfolioService) GetPortfolioById(id string) (models.Portfolio, error) {
-	if err := s.ValidatePortfolioId(id); err != nil {
+func (s *portfolioService) GetPortfolioById(id string) (models.Portfolio, error) {
+	if err := s.validatePortfolioId(id); err != nil {
 		return models.Portfolio{}, err
 	}
 
@@ -62,12 +70,12 @@ func (s *PortfolioService) GetPortfolioById(id string) (models.Portfolio, error)
 	return portfolio, nil
 }
 
-func (s *PortfolioService) UpdatePortfolio(id string, body requests.UpdatePortfolioRequest) (models.Portfolio, error) {
-	if err := s.ValidatePortfolioId(id); err != nil {
+func (s *portfolioService) UpdatePortfolio(id string, body requests.UpdatePortfolioRequest) (models.Portfolio, error) {
+	if err := s.validatePortfolioId(id); err != nil {
 		return models.Portfolio{}, err
 	}
 
-	if err := s.ValidatePortfolioUpdateRequest(id, body); err != nil {
+	if err := s.validatePortfolioUpdateRequest(id, body); err != nil {
 		return models.Portfolio{}, err
 	}
 
@@ -99,8 +107,8 @@ func (s *PortfolioService) UpdatePortfolio(id string, body requests.UpdatePortfo
 	return updatedPortfolio, nil
 }
 
-func (s *PortfolioService) DeletePortfolio(id string) error {
-	if err := s.ValidatePortfolioId(id); err != nil {
+func (s *portfolioService) DeletePortfolio(id string) error {
+	if err := s.validatePortfolioId(id); err != nil {
 		return err
 	}
 
@@ -121,7 +129,7 @@ func (s *PortfolioService) DeletePortfolio(id string) error {
 	return nil
 }
 
-func (s *PortfolioService) ValidatePortfolioCreateRequest(body requests.CreatePortfolioRequest) error {
+func (s *portfolioService) validatePortfolioCreateRequest(body requests.CreatePortfolioRequest) error {
 	validate := validator.New()
 
 	if err := validate.Struct(body); err != nil {
@@ -132,7 +140,7 @@ func (s *PortfolioService) ValidatePortfolioCreateRequest(body requests.CreatePo
 	return nil
 }
 
-func (s *PortfolioService) ValidatePortfolioUpdateRequest(id string, body requests.UpdatePortfolioRequest) error {
+func (s *portfolioService) validatePortfolioUpdateRequest(id string, body requests.UpdatePortfolioRequest) error {
 	validate := validator.New()
 
 	if err := validate.Struct(body); err != nil {
@@ -149,7 +157,7 @@ func (s *PortfolioService) ValidatePortfolioUpdateRequest(id string, body reques
 	return nil
 }
 
-func (s *PortfolioService) ValidatePortfolioId(id string) error {
+func (s *portfolioService) validatePortfolioId(id string) error {
 	validate := validator.New()
 
 	if err := validate.Var(id, "required,numeric"); err != nil {
@@ -160,8 +168,8 @@ func (s *PortfolioService) ValidatePortfolioId(id string) error {
 	return nil
 }
 
-func NewPortfolioService(portfolioRepository repository.PortfolioRepository) *PortfolioService {
-	return &PortfolioService{
+func NewPortfolioService(portfolioRepository repository.PortfolioRepository) *portfolioService {
+	return &portfolioService{
 		portfolioRepository,
 	}
 }
