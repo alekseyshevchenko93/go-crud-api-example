@@ -17,8 +17,8 @@ import (
 
 func TestGetPortfolioByIdSuccess(t *testing.T) {
 	e := echo.New()
-	porfoliosRepository := mocks.NewPortfolioRepository(t)
-	portfolioService := services.NewPortfolioService(porfoliosRepository)
+	portfolioRepository := mocks.NewPortfolioRepository(t)
+	portfolioService := services.NewPortfolioService(portfolioRepository)
 	handler := NewGetPortfolioByIdHandler(portfolioService)
 	portfolioId := 10
 	portfolioIdStr := fmt.Sprintf("%d", portfolioId)
@@ -30,7 +30,7 @@ func TestGetPortfolioByIdSuccess(t *testing.T) {
 		IsInternal: false,
 	}
 
-	porfoliosRepository.EXPECT().GetPortfolioById(portfolioId).Return(&portfolio, nil).Once()
+	portfolioRepository.EXPECT().GetPortfolioById(portfolioId).Return(&portfolio, nil).Once()
 	portfolioJson, _ := json.Marshal(portfolio)
 
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
@@ -48,8 +48,8 @@ func TestGetPortfolioByIdSuccess(t *testing.T) {
 
 func TestGetPortfolioByIdBadRequest(t *testing.T) {
 	e := echo.New()
-	porfoliosRepository := mocks.NewPortfolioRepository(t)
-	portfolioService := services.NewPortfolioService(porfoliosRepository)
+	portfolioRepository := mocks.NewPortfolioRepository(t)
+	portfolioService := services.NewPortfolioService(portfolioRepository)
 	handler := NewGetPortfolioByIdHandler(portfolioService)
 	tt := []string{"string-instead-of-id", "#$(*)@", ""}
 
@@ -72,11 +72,11 @@ func TestGetPortfolioByIdBadRequest(t *testing.T) {
 
 func TestGetPortfolioByIdNotFound(t *testing.T) {
 	e := echo.New()
-	porfoliosRepository := mocks.NewPortfolioRepository(t)
-	portfolioService := services.NewPortfolioService(porfoliosRepository)
+	portfolioRepository := mocks.NewPortfolioRepository(t)
+	portfolioService := services.NewPortfolioService(portfolioRepository)
 	portfolioId := 1
 	portfolioIdStr := fmt.Sprintf("%d", portfolioId)
-	porfoliosRepository.EXPECT().GetPortfolioById(portfolioId).Return(nil, repository.ErrPortfolioNotFound).Once()
+	portfolioRepository.EXPECT().GetPortfolioById(portfolioId).Return(nil, repository.ErrPortfolioNotFound).Once()
 
 	handler := NewGetPortfolioByIdHandler(portfolioService)
 

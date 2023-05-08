@@ -15,15 +15,15 @@ import (
 
 func TestGetPortfolios(t *testing.T) {
 	e := echo.New()
-	porfoliosRepository := mocks.NewPortfolioRepository(t)
-	portfolioService := services.NewPortfolioService(porfoliosRepository)
+	portfolioRepository := mocks.NewPortfolioRepository(t)
+	portfolioService := services.NewPortfolioService(portfolioRepository)
 
 	portfolios := []*models.Portfolio{
 		{Name: "mock-portfolio", IsActive: true, IsFinance: false, IsInternal: false},
 		{Name: "mock-portfolio-2", IsActive: false, IsFinance: true},
 		{Name: "mock-portfolio-3", IsActive: false, IsFinance: false, IsInternal: true},
 	}
-	porfoliosRepository.EXPECT().GetPortfolios().Return(portfolios, nil).Once()
+	portfolioRepository.EXPECT().GetPortfolios().Return(portfolios, nil).Once()
 	portfoliosJson, _ := json.Marshal(portfolios)
 
 	handler := NewGetPortfoliosHandler(portfolioService)

@@ -20,8 +20,8 @@ import (
 
 func TestUpdatePortfolioSuccess(t *testing.T) {
 	e := echo.New()
-	porfoliosRepository := mocks.NewPortfolioRepository(t)
-	portfolioService := services.NewPortfolioService(porfoliosRepository)
+	portfolioRepository := mocks.NewPortfolioRepository(t)
+	portfolioService := services.NewPortfolioService(portfolioRepository)
 	portfolioId := 1
 	portfolioIdStr := fmt.Sprintf("%d", portfolioId)
 	createdAt := time.Now()
@@ -44,8 +44,8 @@ func TestUpdatePortfolioSuccess(t *testing.T) {
 
 	responseJson, _ := json.Marshal(portfolio)
 	requestJson, _ := json.Marshal(requestBody)
-	porfoliosRepository.EXPECT().GetPortfolioById(portfolioId).Return(&portfolio, nil).Once()
-	porfoliosRepository.EXPECT().UpdatePortfolio(&portfolio).Return(&portfolio, nil).Once()
+	portfolioRepository.EXPECT().GetPortfolioById(portfolioId).Return(&portfolio, nil).Once()
+	portfolioRepository.EXPECT().UpdatePortfolio(&portfolio).Return(&portfolio, nil).Once()
 
 	handler := NewUpdatePortfolioHandler(portfolioService)
 	req := httptest.NewRequest(http.MethodPut, "/", bytes.NewReader(requestJson))
@@ -64,8 +64,8 @@ func TestUpdatePortfolioSuccess(t *testing.T) {
 
 func TestUpdatePortfolioBadRequests(t *testing.T) {
 	e := echo.New()
-	porfoliosRepository := mocks.NewPortfolioRepository(t)
-	portfolioService := services.NewPortfolioService(porfoliosRepository)
+	portfolioRepository := mocks.NewPortfolioRepository(t)
+	portfolioService := services.NewPortfolioService(portfolioRepository)
 	handler := NewUpdatePortfolioHandler(portfolioService)
 	tt := []struct {
 		ParamId string
@@ -113,8 +113,8 @@ func TestUpdatePortfolioBadRequests(t *testing.T) {
 
 func TestUpdatePortfolioNotFound(t *testing.T) {
 	e := echo.New()
-	porfoliosRepository := mocks.NewPortfolioRepository(t)
-	portfolioService := services.NewPortfolioService(porfoliosRepository)
+	portfolioRepository := mocks.NewPortfolioRepository(t)
+	portfolioService := services.NewPortfolioService(portfolioRepository)
 	handler := NewUpdatePortfolioHandler(portfolioService)
 	portfolioId := 1
 	portfolioIdStr := fmt.Sprintf("%d", portfolioId)
@@ -126,7 +126,7 @@ func TestUpdatePortfolioNotFound(t *testing.T) {
 	}
 
 	responseErr := echo.NewHTTPError(http.StatusNotFound)
-	porfoliosRepository.EXPECT().GetPortfolioById(portfolioId).Return(nil, responseErr).Once()
+	portfolioRepository.EXPECT().GetPortfolioById(portfolioId).Return(nil, responseErr).Once()
 	bodyJson, _ := json.Marshal(requestBody)
 	req := httptest.NewRequest(http.MethodPut, "/", bytes.NewReader(bodyJson))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
@@ -146,8 +146,8 @@ func TestUpdatePortfolioNotFound(t *testing.T) {
 
 func TestUpdatePortfolioConflict(t *testing.T) {
 	e := echo.New()
-	porfoliosRepository := mocks.NewPortfolioRepository(t)
-	portfolioService := services.NewPortfolioService(porfoliosRepository)
+	portfolioRepository := mocks.NewPortfolioRepository(t)
+	portfolioService := services.NewPortfolioService(portfolioRepository)
 	handler := NewUpdatePortfolioHandler(portfolioService)
 	portfolioId := 1
 	portfolioIdStr := fmt.Sprintf("%d", portfolioId)
@@ -169,8 +169,8 @@ func TestUpdatePortfolioConflict(t *testing.T) {
 		UpdatedAt:  &createdAt,
 	}
 
-	porfoliosRepository.EXPECT().GetPortfolioById(portfolioId).Return(&portfolio, nil).Once()
-	porfoliosRepository.EXPECT().UpdatePortfolio(&portfolio).Return(nil, repository.ErrPortfolioAlreadyExists).Once()
+	portfolioRepository.EXPECT().GetPortfolioById(portfolioId).Return(&portfolio, nil).Once()
+	portfolioRepository.EXPECT().UpdatePortfolio(&portfolio).Return(nil, repository.ErrPortfolioAlreadyExists).Once()
 	bodyJson, _ := json.Marshal(requestBody)
 	req := httptest.NewRequest(http.MethodPut, "/", bytes.NewReader(bodyJson))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)

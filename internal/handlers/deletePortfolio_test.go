@@ -17,8 +17,8 @@ import (
 
 func TestDeletePortfolioSuccess(t *testing.T) {
 	e := echo.New()
-	porfoliosRepository := mocks.NewPortfolioRepository(t)
-	portfolioService := services.NewPortfolioService(porfoliosRepository)
+	portfolioRepository := mocks.NewPortfolioRepository(t)
+	portfolioService := services.NewPortfolioService(portfolioRepository)
 	portfolioId := 1
 	portfolioIdStr := fmt.Sprintf("%d", portfolioId)
 
@@ -28,8 +28,8 @@ func TestDeletePortfolioSuccess(t *testing.T) {
 		IsFinance: true,
 	}
 
-	porfoliosRepository.EXPECT().GetPortfolioById(portfolioId).Return(&portfolio, nil).Once()
-	porfoliosRepository.EXPECT().DeletePortfolio(portfolioId).Return(nil).Once()
+	portfolioRepository.EXPECT().GetPortfolioById(portfolioId).Return(&portfolio, nil).Once()
+	portfolioRepository.EXPECT().DeletePortfolio(portfolioId).Return(nil).Once()
 	handler := NewDeletePortfolioHandler(portfolioService)
 
 	req := httptest.NewRequest(http.MethodDelete, "/", nil)
@@ -46,8 +46,8 @@ func TestDeletePortfolioSuccess(t *testing.T) {
 
 func TestDeletePortfolioBadRequest(t *testing.T) {
 	e := echo.New()
-	porfoliosRepository := mocks.NewPortfolioRepository(t)
-	portfolioService := services.NewPortfolioService(porfoliosRepository)
+	portfolioRepository := mocks.NewPortfolioRepository(t)
+	portfolioService := services.NewPortfolioService(portfolioRepository)
 	tt := []string{"", "some-string", "#$*(&$#(*!}[-=)"}
 	handler := NewDeletePortfolioHandler(portfolioService)
 
@@ -70,11 +70,11 @@ func TestDeletePortfolioBadRequest(t *testing.T) {
 
 func TestDeletePortfolioNotFound(t *testing.T) {
 	e := echo.New()
-	porfoliosRepository := mocks.NewPortfolioRepository(t)
-	portfolioService := services.NewPortfolioService(porfoliosRepository)
+	portfolioRepository := mocks.NewPortfolioRepository(t)
+	portfolioService := services.NewPortfolioService(portfolioRepository)
 	portfolioId := 1
 	portfolioIdStr := fmt.Sprintf("%d", portfolioId)
-	porfoliosRepository.EXPECT().GetPortfolioById(portfolioId).Return(nil, repository.ErrPortfolioNotFound).Once()
+	portfolioRepository.EXPECT().GetPortfolioById(portfolioId).Return(nil, repository.ErrPortfolioNotFound).Once()
 
 	handler := NewDeletePortfolioHandler(portfolioService)
 	req := httptest.NewRequest(http.MethodDelete, "/", nil)
