@@ -23,7 +23,7 @@ type DeletePortfolioSuite struct {
 }
 
 func TestDeletePortfolioSuite(t *testing.T) {
-	suite.Run(t, new(GetPortfolioByIdSuite))
+	suite.Run(t, new(DeletePortfolioSuite))
 }
 
 func (suite *DeletePortfolioSuite) SetupSuite() {

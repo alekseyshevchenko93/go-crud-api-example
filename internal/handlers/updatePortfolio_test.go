@@ -7,66 +7,80 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"time"
 
-	"github.com/alekseyshevchenko93/go-crud-api-example/internal/domain/models"
 	requests "github.com/alekseyshevchenko93/go-crud-api-example/internal/domain/requests"
 	"github.com/alekseyshevchenko93/go-crud-api-example/internal/repository"
 	mocks "github.com/alekseyshevchenko93/go-crud-api-example/internal/repository/mocks"
 	"github.com/alekseyshevchenko93/go-crud-api-example/internal/services"
+	"github.com/alekseyshevchenko93/go-crud-api-example/test/factories"
 	"github.com/labstack/echo/v4"
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestUpdatePortfolioSuccess(t *testing.T) {
+type UpdatePortfolioSuite struct {
+	suite.Suite
+	portfolioRepository *mocks.PortfolioRepository
+	portfolioService    services.PortfolioService
+	e                   *echo.Echo
+}
+
+func TestUpdatePortfolioSuite(t *testing.T) {
+	suite.Run(t, new(UpdatePortfolioSuite))
+}
+
+func (suite *UpdatePortfolioSuite) SetupSuite() {
+	t := suite.T()
 	e := echo.New()
-	portfolioRepository := mocks.NewPortfolioRepository(t)
-	portfolioService := services.NewPortfolioService(portfolioRepository)
-	portfolioId := 1
-	portfolioIdStr := fmt.Sprintf("%d", portfolioId)
-	createdAt := time.Now()
+	porftolioRepository := mocks.NewPortfolioRepository(t)
+	portfolioService := services.NewPortfolioService(porftolioRepository)
+
+	suite.e = e
+	suite.portfolioRepository = porftolioRepository
+	suite.portfolioService = portfolioService
+}
+
+func (suite *UpdatePortfolioSuite) TestUpdatePortfolioSuccess() {
+	r := suite.Require()
+	handler := NewUpdatePortfolioHandler(suite.portfolioService)
+	portfolio := factories.GetPortfolio()
+	portfolioIdStr := fmt.Sprintf("%d", portfolio.Id)
+
+	portfolioCopy := *portfolio
+	updatedPortfolio := &portfolioCopy
+	updatedPortfolio.Name = "updated-portfolio"
+	updatedPortfolio.IsActive = true
 
 	requestBody := requests.UpdatePortfolioRequest{
-		Id:       portfolioId,
-		Name:     "updated-portfolio",
-		IsActive: true,
+		Id:         updatedPortfolio.Id,
+		Name:       updatedPortfolio.Name,
+		IsActive:   updatedPortfolio.IsActive,
+		IsFinance:  updatedPortfolio.IsFinance,
+		IsInternal: updatedPortfolio.IsInternal,
 	}
 
-	portfolio := models.Portfolio{
-		Id:         portfolioId,
-		Name:       requestBody.Name,
-		IsActive:   requestBody.IsActive,
-		IsFinance:  false,
-		IsInternal: false,
-		CreatedAt:  &createdAt,
-		UpdatedAt:  &createdAt,
-	}
-
-	responseJson, _ := json.Marshal(portfolio)
+	responseJson, _ := json.Marshal(updatedPortfolio)
 	requestJson, _ := json.Marshal(requestBody)
-	portfolioRepository.EXPECT().GetPortfolioById(portfolioId).Return(&portfolio, nil).Once()
-	portfolioRepository.EXPECT().UpdatePortfolio(&portfolio).Return(&portfolio, nil).Once()
+	suite.portfolioRepository.EXPECT().GetPortfolioById(portfolio.Id).Return(portfolio, nil).Once()
+	suite.portfolioRepository.EXPECT().UpdatePortfolio(updatedPortfolio).Return(updatedPortfolio, nil).Once()
 
-	handler := NewUpdatePortfolioHandler(portfolioService)
 	req := httptest.NewRequest(http.MethodPut, "/", bytes.NewReader(requestJson))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
-	ctx := e.NewContext(req, rec)
+	ctx := suite.e.NewContext(req, rec)
 	ctx.SetPath("/portfolios/:id")
 	ctx.SetParamNames("id")
 	ctx.SetParamValues(portfolioIdStr)
 
 	err := handler(ctx)
 
-	assert.NoError(t, err)
-	assert.Contains(t, rec.Body.String(), string(responseJson))
+	r.NoError(err)
+	r.Contains(rec.Body.String(), string(responseJson))
 }
 
-func TestUpdatePortfolioBadRequests(t *testing.T) {
-	e := echo.New()
-	portfolioRepository := mocks.NewPortfolioRepository(t)
-	portfolioService := services.NewPortfolioService(portfolioRepository)
-	handler := NewUpdatePortfolioHandler(portfolioService)
+func (suite *UpdatePortfolioSuite) TestUpdatePortfolioBadRequests() {
+	r := suite.Require()
+	handler := NewUpdatePortfolioHandler(suite.portfolioService)
+
 	tt := []struct {
 		ParamId string
 		Body    requests.UpdatePortfolioRequest
@@ -97,94 +111,88 @@ func TestUpdatePortfolioBadRequests(t *testing.T) {
 		req := httptest.NewRequest(http.MethodPut, "/", bytes.NewReader(bodyJson))
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 		rec := httptest.NewRecorder()
-		ctx := e.NewContext(req, rec)
+		ctx := suite.e.NewContext(req, rec)
 		ctx.SetPath("/portfolios/:id")
 		ctx.SetParamNames("id")
 		ctx.SetParamValues(paramId)
 
 		err := handler(ctx)
 
-		assert.Error(t, err)
+		r.Error(err)
 		httpError, ok := err.(*echo.HTTPError)
-		assert.True(t, ok)
-		assert.Equal(t, httpError.Code, http.StatusBadRequest)
+		r.True(ok)
+		r.Equal(httpError.Code, http.StatusBadRequest)
 	}
 }
 
-func TestUpdatePortfolioNotFound(t *testing.T) {
-	e := echo.New()
-	portfolioRepository := mocks.NewPortfolioRepository(t)
-	portfolioService := services.NewPortfolioService(portfolioRepository)
-	handler := NewUpdatePortfolioHandler(portfolioService)
-	portfolioId := 1
-	portfolioIdStr := fmt.Sprintf("%d", portfolioId)
+func (suite *UpdatePortfolioSuite) TestUpdatePortfolioNotFound() {
+	r := suite.Require()
+	handler := NewUpdatePortfolioHandler(suite.portfolioService)
+	portfolio := factories.GetPortfolio()
+	portfolioIdStr := fmt.Sprintf("%d", portfolio.Id)
 
 	requestBody := requests.UpdatePortfolioRequest{
-		Id:       portfolioId,
-		Name:     "updated-portfolio",
-		IsActive: true,
+		Id:         portfolio.Id,
+		Name:       "updated-portfolio",
+		IsActive:   !portfolio.IsActive,
+		IsFinance:  !portfolio.IsFinance,
+		IsInternal: !portfolio.IsInternal,
 	}
 
 	responseErr := echo.NewHTTPError(http.StatusNotFound)
-	portfolioRepository.EXPECT().GetPortfolioById(portfolioId).Return(nil, responseErr).Once()
+	suite.portfolioRepository.EXPECT().GetPortfolioById(portfolio.Id).Return(nil, responseErr).Once()
 	bodyJson, _ := json.Marshal(requestBody)
 	req := httptest.NewRequest(http.MethodPut, "/", bytes.NewReader(bodyJson))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
-	ctx := e.NewContext(req, rec)
+	ctx := suite.e.NewContext(req, rec)
 	ctx.SetPath("/portfolios/:id")
 	ctx.SetParamNames("id")
 	ctx.SetParamValues(portfolioIdStr)
 
 	err := handler(ctx)
 
-	assert.Error(t, err)
+	r.Error(err)
 	httpError, ok := err.(*echo.HTTPError)
-	assert.True(t, ok)
-	assert.Equal(t, httpError.Code, http.StatusNotFound)
+	r.True(ok)
+	r.Equal(httpError.Code, http.StatusNotFound)
 }
 
-func TestUpdatePortfolioConflict(t *testing.T) {
-	e := echo.New()
-	portfolioRepository := mocks.NewPortfolioRepository(t)
-	portfolioService := services.NewPortfolioService(portfolioRepository)
-	handler := NewUpdatePortfolioHandler(portfolioService)
-	portfolioId := 1
-	portfolioIdStr := fmt.Sprintf("%d", portfolioId)
-	createdAt := time.Now()
+func (suite *UpdatePortfolioSuite) TestUpdatePortfolioConflict() {
+	r := suite.Require()
+	handler := NewUpdatePortfolioHandler(suite.portfolioService)
+	portfolio := factories.GetPortfolio()
+	portfolioIdStr := fmt.Sprintf("%d", portfolio.Id)
+
+	portfolioCopy := *portfolio
+	updatedPortfolio := &portfolioCopy
+	updatedPortfolio.Name = "updated-portfolio"
 
 	requestBody := requests.UpdatePortfolioRequest{
-		Id:       portfolioId,
-		Name:     "updated-portfolio",
-		IsActive: true,
+		Id:         updatedPortfolio.Id,
+		Name:       "updated-portfolio",
+		IsActive:   updatedPortfolio.IsActive,
+		IsFinance:  updatedPortfolio.IsFinance,
+		IsInternal: updatedPortfolio.IsInternal,
 	}
 
-	portfolio := models.Portfolio{
-		Id:         portfolioId,
-		Name:       requestBody.Name,
-		IsActive:   requestBody.IsActive,
-		IsFinance:  false,
-		IsInternal: false,
-		CreatedAt:  &createdAt,
-		UpdatedAt:  &createdAt,
-	}
+	suite.portfolioRepository.EXPECT().GetPortfolioById(portfolio.Id).Return(portfolio, nil).Once()
+	suite.portfolioRepository.EXPECT().UpdatePortfolio(updatedPortfolio).Return(nil, repository.ErrPortfolioAlreadyExists).Once()
 
-	portfolioRepository.EXPECT().GetPortfolioById(portfolioId).Return(&portfolio, nil).Once()
-	portfolioRepository.EXPECT().UpdatePortfolio(&portfolio).Return(nil, repository.ErrPortfolioAlreadyExists).Once()
 	bodyJson, _ := json.Marshal(requestBody)
 	req := httptest.NewRequest(http.MethodPut, "/", bytes.NewReader(bodyJson))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
-	ctx := e.NewContext(req, rec)
+	ctx := suite.e.NewContext(req, rec)
 	ctx.SetPath("/portfolios/:id")
 	ctx.SetParamNames("id")
 	ctx.SetParamValues(portfolioIdStr)
 
 	err := handler(ctx)
 
-	assert.Error(t, err)
+	r.Error(err)
 	httpError, ok := err.(*echo.HTTPError)
 
-	assert.True(t, ok)
-	assert.Equal(t, httpError.Code, http.StatusConflict)
+	r.True(ok)
+	r.Equal(httpError.Code, http.StatusConflict)
 }
