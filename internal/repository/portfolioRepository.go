@@ -70,7 +70,7 @@ func (p *portfolioRepository) GetPortfolioById(id string) (models.Portfolio, err
 	idInt, _ := strconv.Atoi(id)
 	model, ok := p.storage[idInt]
 
-	if ok == false {
+	if !ok {
 		return models.Portfolio{}, ErrPortfolioNotFound
 	}
 
@@ -79,9 +79,7 @@ func (p *portfolioRepository) GetPortfolioById(id string) (models.Portfolio, err
 
 func (p *portfolioRepository) DeletePortfolio(id string) error {
 	idInt, _ := strconv.Atoi(id)
-	_, ok := p.storage[idInt]
-
-	if ok == false {
+	if _, ok := p.storage[idInt]; !ok {
 		return ErrPortfolioNotFound
 	}
 
