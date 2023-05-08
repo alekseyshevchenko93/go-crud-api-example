@@ -23,6 +23,10 @@ type CreatePortfolioSuite struct {
 	e                   *echo.Echo
 }
 
+func TestCreatePortfolioSuite(t *testing.T) {
+	suite.Run(t, new(CreatePortfolioSuite))
+}
+
 func (suite *CreatePortfolioSuite) SetupSuite() {
 	t := suite.T()
 	e := echo.New()
@@ -35,6 +39,7 @@ func (suite *CreatePortfolioSuite) SetupSuite() {
 }
 
 func (suite *CreatePortfolioSuite) TestCreatePortfolioSuccess() {
+	r := suite.Require()
 	handler := NewCreatePortfolioHandler(suite.portfolioService)
 	portfolio := factories.GetPortfolio()
 	requestBody := requests.CreatePortfolioRequest{
@@ -53,11 +58,12 @@ func (suite *CreatePortfolioSuite) TestCreatePortfolioSuccess() {
 
 	err := handler(ctx)
 
-	suite.Require().NoError(err)
-	suite.Require().Contains(rec.Body.String(), string(responseJson))
+	r.NoError(err)
+	r.Contains(rec.Body.String(), string(responseJson))
 }
 
 func (suite *CreatePortfolioSuite) TestCreatePortfolioBadRequests() {
+	r := suite.Require()
 	handler := NewCreatePortfolioHandler(suite.portfolioService)
 
 	tt := []*requests.CreatePortfolioRequest{
@@ -75,14 +81,15 @@ func (suite *CreatePortfolioSuite) TestCreatePortfolioBadRequests() {
 
 		err := handler(ctx)
 
-		suite.Require().Error(err)
+		r.Error(err)
 		httpError, ok := err.(*echo.HTTPError)
-		suite.Require().True(ok)
-		suite.Require().Equal(httpError.Code, http.StatusBadRequest)
+		r.True(ok)
+		r.Equal(httpError.Code, http.StatusBadRequest)
 	}
 }
 
 func (suite *CreatePortfolioSuite) TestCreatePortfolioConflict() {
+	r := suite.Require()
 	handler := NewCreatePortfolioHandler(suite.portfolioService)
 	requestBody := factories.GetCreatePortfolioRequest()
 	bodyJson, _ := json.Marshal(requestBody)
@@ -96,12 +103,8 @@ func (suite *CreatePortfolioSuite) TestCreatePortfolioConflict() {
 
 	err := handler(ctx)
 
-	suite.Require().Error(err)
+	r.Error(err)
 	httpError, ok := err.(*echo.HTTPError)
-	suite.Require().True(ok)
-	suite.Require().Equal(httpError.Code, http.StatusConflict)
-}
-
-func TestCreatePortfolioSuite(t *testing.T) {
-	suite.Run(t, new(CreatePortfolioSuite))
+	r.True(ok)
+	r.Equal(httpError.Code, http.StatusConflict)
 }
