@@ -18,7 +18,7 @@ func TestGetPortfolios(t *testing.T) {
 	porfoliosRepository := mocks.NewPortfolioRepository(t)
 	portfolioService := services.NewPortfolioService(porfoliosRepository)
 
-	portfolios := []models.Portfolio{
+	portfolios := []*models.Portfolio{
 		{Name: "mock-portfolio", IsActive: true, IsFinance: false, IsInternal: false},
 		{Name: "mock-portfolio-2", IsActive: false, IsFinance: true},
 		{Name: "mock-portfolio-3", IsActive: false, IsFinance: false, IsInternal: true},

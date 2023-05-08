@@ -23,21 +23,23 @@ func (_m *PortfolioRepository) EXPECT() *PortfolioRepository_Expecter {
 }
 
 // CreatePortfolio provides a mock function with given fields: _a0
-func (_m *PortfolioRepository) CreatePortfolio(_a0 domain.CreatePortfolioRequest) (models.Portfolio, error) {
+func (_m *PortfolioRepository) CreatePortfolio(_a0 *domain.CreatePortfolioRequest) (*models.Portfolio, error) {
 	ret := _m.Called(_a0)
 
-	var r0 models.Portfolio
+	var r0 *models.Portfolio
 	var r1 error
-	if rf, ok := ret.Get(0).(func(domain.CreatePortfolioRequest) (models.Portfolio, error)); ok {
+	if rf, ok := ret.Get(0).(func(*domain.CreatePortfolioRequest) (*models.Portfolio, error)); ok {
 		return rf(_a0)
 	}
-	if rf, ok := ret.Get(0).(func(domain.CreatePortfolioRequest) models.Portfolio); ok {
+	if rf, ok := ret.Get(0).(func(*domain.CreatePortfolioRequest) *models.Portfolio); ok {
 		r0 = rf(_a0)
 	} else {
-		r0 = ret.Get(0).(models.Portfolio)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.Portfolio)
+		}
 	}
 
-	if rf, ok := ret.Get(1).(func(domain.CreatePortfolioRequest) error); ok {
+	if rf, ok := ret.Get(1).(func(*domain.CreatePortfolioRequest) error); ok {
 		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)
@@ -52,24 +54,24 @@ type PortfolioRepository_CreatePortfolio_Call struct {
 }
 
 // CreatePortfolio is a helper method to define mock.On call
-//   - _a0 domain.CreatePortfolioRequest
+//   - _a0 *domain.CreatePortfolioRequest
 func (_e *PortfolioRepository_Expecter) CreatePortfolio(_a0 interface{}) *PortfolioRepository_CreatePortfolio_Call {
 	return &PortfolioRepository_CreatePortfolio_Call{Call: _e.mock.On("CreatePortfolio", _a0)}
 }
 
-func (_c *PortfolioRepository_CreatePortfolio_Call) Run(run func(_a0 domain.CreatePortfolioRequest)) *PortfolioRepository_CreatePortfolio_Call {
+func (_c *PortfolioRepository_CreatePortfolio_Call) Run(run func(_a0 *domain.CreatePortfolioRequest)) *PortfolioRepository_CreatePortfolio_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(domain.CreatePortfolioRequest))
+		run(args[0].(*domain.CreatePortfolioRequest))
 	})
 	return _c
 }
 
-func (_c *PortfolioRepository_CreatePortfolio_Call) Return(_a0 models.Portfolio, _a1 error) *PortfolioRepository_CreatePortfolio_Call {
+func (_c *PortfolioRepository_CreatePortfolio_Call) Return(_a0 *models.Portfolio, _a1 error) *PortfolioRepository_CreatePortfolio_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *PortfolioRepository_CreatePortfolio_Call) RunAndReturn(run func(domain.CreatePortfolioRequest) (models.Portfolio, error)) *PortfolioRepository_CreatePortfolio_Call {
+func (_c *PortfolioRepository_CreatePortfolio_Call) RunAndReturn(run func(*domain.CreatePortfolioRequest) (*models.Portfolio, error)) *PortfolioRepository_CreatePortfolio_Call {
 	_c.Call.Return(run)
 	return _c
 }
@@ -117,18 +119,20 @@ func (_c *PortfolioRepository_DeletePortfolio_Call) RunAndReturn(run func(int) e
 }
 
 // GetPortfolioById provides a mock function with given fields: _a0
-func (_m *PortfolioRepository) GetPortfolioById(_a0 int) (models.Portfolio, error) {
+func (_m *PortfolioRepository) GetPortfolioById(_a0 int) (*models.Portfolio, error) {
 	ret := _m.Called(_a0)
 
-	var r0 models.Portfolio
+	var r0 *models.Portfolio
 	var r1 error
-	if rf, ok := ret.Get(0).(func(int) (models.Portfolio, error)); ok {
+	if rf, ok := ret.Get(0).(func(int) (*models.Portfolio, error)); ok {
 		return rf(_a0)
 	}
-	if rf, ok := ret.Get(0).(func(int) models.Portfolio); ok {
+	if rf, ok := ret.Get(0).(func(int) *models.Portfolio); ok {
 		r0 = rf(_a0)
 	} else {
-		r0 = ret.Get(0).(models.Portfolio)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.Portfolio)
+		}
 	}
 
 	if rf, ok := ret.Get(1).(func(int) error); ok {
@@ -158,30 +162,30 @@ func (_c *PortfolioRepository_GetPortfolioById_Call) Run(run func(_a0 int)) *Por
 	return _c
 }
 
-func (_c *PortfolioRepository_GetPortfolioById_Call) Return(_a0 models.Portfolio, _a1 error) *PortfolioRepository_GetPortfolioById_Call {
+func (_c *PortfolioRepository_GetPortfolioById_Call) Return(_a0 *models.Portfolio, _a1 error) *PortfolioRepository_GetPortfolioById_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *PortfolioRepository_GetPortfolioById_Call) RunAndReturn(run func(int) (models.Portfolio, error)) *PortfolioRepository_GetPortfolioById_Call {
+func (_c *PortfolioRepository_GetPortfolioById_Call) RunAndReturn(run func(int) (*models.Portfolio, error)) *PortfolioRepository_GetPortfolioById_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // GetPortfolios provides a mock function with given fields:
-func (_m *PortfolioRepository) GetPortfolios() ([]models.Portfolio, error) {
+func (_m *PortfolioRepository) GetPortfolios() ([]*models.Portfolio, error) {
 	ret := _m.Called()
 
-	var r0 []models.Portfolio
+	var r0 []*models.Portfolio
 	var r1 error
-	if rf, ok := ret.Get(0).(func() ([]models.Portfolio, error)); ok {
+	if rf, ok := ret.Get(0).(func() ([]*models.Portfolio, error)); ok {
 		return rf()
 	}
-	if rf, ok := ret.Get(0).(func() []models.Portfolio); ok {
+	if rf, ok := ret.Get(0).(func() []*models.Portfolio); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]models.Portfolio)
+			r0 = ret.Get(0).([]*models.Portfolio)
 		}
 	}
 
@@ -211,32 +215,34 @@ func (_c *PortfolioRepository_GetPortfolios_Call) Run(run func()) *PortfolioRepo
 	return _c
 }
 
-func (_c *PortfolioRepository_GetPortfolios_Call) Return(_a0 []models.Portfolio, _a1 error) *PortfolioRepository_GetPortfolios_Call {
+func (_c *PortfolioRepository_GetPortfolios_Call) Return(_a0 []*models.Portfolio, _a1 error) *PortfolioRepository_GetPortfolios_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *PortfolioRepository_GetPortfolios_Call) RunAndReturn(run func() ([]models.Portfolio, error)) *PortfolioRepository_GetPortfolios_Call {
+func (_c *PortfolioRepository_GetPortfolios_Call) RunAndReturn(run func() ([]*models.Portfolio, error)) *PortfolioRepository_GetPortfolios_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // UpdatePortfolio provides a mock function with given fields: _a0
-func (_m *PortfolioRepository) UpdatePortfolio(_a0 models.Portfolio) (models.Portfolio, error) {
+func (_m *PortfolioRepository) UpdatePortfolio(_a0 *models.Portfolio) (*models.Portfolio, error) {
 	ret := _m.Called(_a0)
 
-	var r0 models.Portfolio
+	var r0 *models.Portfolio
 	var r1 error
-	if rf, ok := ret.Get(0).(func(models.Portfolio) (models.Portfolio, error)); ok {
+	if rf, ok := ret.Get(0).(func(*models.Portfolio) (*models.Portfolio, error)); ok {
 		return rf(_a0)
 	}
-	if rf, ok := ret.Get(0).(func(models.Portfolio) models.Portfolio); ok {
+	if rf, ok := ret.Get(0).(func(*models.Portfolio) *models.Portfolio); ok {
 		r0 = rf(_a0)
 	} else {
-		r0 = ret.Get(0).(models.Portfolio)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*models.Portfolio)
+		}
 	}
 
-	if rf, ok := ret.Get(1).(func(models.Portfolio) error); ok {
+	if rf, ok := ret.Get(1).(func(*models.Portfolio) error); ok {
 		r1 = rf(_a0)
 	} else {
 		r1 = ret.Error(1)
@@ -251,24 +257,24 @@ type PortfolioRepository_UpdatePortfolio_Call struct {
 }
 
 // UpdatePortfolio is a helper method to define mock.On call
-//   - _a0 models.Portfolio
+//   - _a0 *models.Portfolio
 func (_e *PortfolioRepository_Expecter) UpdatePortfolio(_a0 interface{}) *PortfolioRepository_UpdatePortfolio_Call {
 	return &PortfolioRepository_UpdatePortfolio_Call{Call: _e.mock.On("UpdatePortfolio", _a0)}
 }
 
-func (_c *PortfolioRepository_UpdatePortfolio_Call) Run(run func(_a0 models.Portfolio)) *PortfolioRepository_UpdatePortfolio_Call {
+func (_c *PortfolioRepository_UpdatePortfolio_Call) Run(run func(_a0 *models.Portfolio)) *PortfolioRepository_UpdatePortfolio_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(models.Portfolio))
+		run(args[0].(*models.Portfolio))
 	})
 	return _c
 }
 
-func (_c *PortfolioRepository_UpdatePortfolio_Call) Return(_a0 models.Portfolio, _a1 error) *PortfolioRepository_UpdatePortfolio_Call {
+func (_c *PortfolioRepository_UpdatePortfolio_Call) Return(_a0 *models.Portfolio, _a1 error) *PortfolioRepository_UpdatePortfolio_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *PortfolioRepository_UpdatePortfolio_Call) RunAndReturn(run func(models.Portfolio) (models.Portfolio, error)) *PortfolioRepository_UpdatePortfolio_Call {
+func (_c *PortfolioRepository_UpdatePortfolio_Call) RunAndReturn(run func(*models.Portfolio) (*models.Portfolio, error)) *PortfolioRepository_UpdatePortfolio_Call {
 	_c.Call.Return(run)
 	return _c
 }

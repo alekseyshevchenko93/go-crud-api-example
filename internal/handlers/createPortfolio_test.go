@@ -40,7 +40,7 @@ func TestCreatePortfolioSuccess(t *testing.T) {
 
 	responseJson, _ := json.Marshal(portfolio)
 	requestJson, _ := json.Marshal(requestBody)
-	porfoliosRepository.EXPECT().CreatePortfolio(requestBody).Return(portfolio, nil).Once()
+	porfoliosRepository.EXPECT().CreatePortfolio(&requestBody).Return(&portfolio, nil).Once()
 
 	handler := NewCreatePortfolioHandler(portfolioService)
 	req := httptest.NewRequest(http.MethodPost, "/", bytes.NewReader(requestJson))
@@ -59,7 +59,7 @@ func TestCreatePortfolioBadRequests(t *testing.T) {
 	porfoliosRepository := mocks.NewPortfolioRepository(t)
 	portfolioService := services.NewPortfolioService(porfoliosRepository)
 	handler := NewCreatePortfolioHandler(portfolioService)
-	tt := []requests.CreatePortfolioRequest{
+	tt := []*requests.CreatePortfolioRequest{
 		{Name: ""},
 		{Name: "here-should-be-20-symbols", IsActive: true, IsFinance: false, IsInternal: false},
 	}
@@ -89,7 +89,7 @@ func TestCreatePortfolioConflict(t *testing.T) {
 		Name:     "portfolio",
 		IsActive: true,
 	}
-	porfoliosRepository.EXPECT().CreatePortfolio(requestBody).Return(models.Portfolio{}, repository.ErrPortfolioAlreadyExists).Once()
+	porfoliosRepository.EXPECT().CreatePortfolio(&requestBody).Return(nil, repository.ErrPortfolioAlreadyExists).Once()
 	bodyJson, _ := json.Marshal(requestBody)
 	req := httptest.NewRequest(http.MethodPost, "/", bytes.NewReader(bodyJson))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)

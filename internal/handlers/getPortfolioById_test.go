@@ -22,6 +22,7 @@ func TestGetPortfolioByIdSuccess(t *testing.T) {
 	handler := NewGetPortfolioByIdHandler(portfolioService)
 	portfolioId := 10
 	portfolioIdStr := fmt.Sprintf("%d", portfolioId)
+
 	portfolio := models.Portfolio{
 		Name:       "mock-portfolio",
 		IsActive:   true,
@@ -29,7 +30,7 @@ func TestGetPortfolioByIdSuccess(t *testing.T) {
 		IsInternal: false,
 	}
 
-	porfoliosRepository.EXPECT().GetPortfolioById(portfolioId).Return(portfolio, nil).Once()
+	porfoliosRepository.EXPECT().GetPortfolioById(portfolioId).Return(&portfolio, nil).Once()
 	portfolioJson, _ := json.Marshal(portfolio)
 
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
@@ -75,7 +76,7 @@ func TestGetPortfolioByIdNotFound(t *testing.T) {
 	portfolioService := services.NewPortfolioService(porfoliosRepository)
 	portfolioId := 1
 	portfolioIdStr := fmt.Sprintf("%d", portfolioId)
-	porfoliosRepository.EXPECT().GetPortfolioById(portfolioId).Return(models.Portfolio{}, repository.ErrPortfolioNotFound).Once()
+	porfoliosRepository.EXPECT().GetPortfolioById(portfolioId).Return(nil, repository.ErrPortfolioNotFound).Once()
 
 	handler := NewGetPortfolioByIdHandler(portfolioService)
 

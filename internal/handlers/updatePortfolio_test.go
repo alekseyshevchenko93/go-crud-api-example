@@ -44,8 +44,8 @@ func TestUpdatePortfolioSuccess(t *testing.T) {
 
 	responseJson, _ := json.Marshal(portfolio)
 	requestJson, _ := json.Marshal(requestBody)
-	porfoliosRepository.EXPECT().GetPortfolioById(portfolioId).Return(portfolio, nil).Once()
-	porfoliosRepository.EXPECT().UpdatePortfolio(portfolio).Return(portfolio, nil).Once()
+	porfoliosRepository.EXPECT().GetPortfolioById(portfolioId).Return(&portfolio, nil).Once()
+	porfoliosRepository.EXPECT().UpdatePortfolio(&portfolio).Return(&portfolio, nil).Once()
 
 	handler := NewUpdatePortfolioHandler(portfolioService)
 	req := httptest.NewRequest(http.MethodPut, "/", bytes.NewReader(requestJson))
@@ -126,7 +126,7 @@ func TestUpdatePortfolioNotFound(t *testing.T) {
 	}
 
 	responseErr := echo.NewHTTPError(http.StatusNotFound)
-	porfoliosRepository.EXPECT().GetPortfolioById(portfolioId).Return(models.Portfolio{}, responseErr).Once()
+	porfoliosRepository.EXPECT().GetPortfolioById(portfolioId).Return(nil, responseErr).Once()
 	bodyJson, _ := json.Marshal(requestBody)
 	req := httptest.NewRequest(http.MethodPut, "/", bytes.NewReader(bodyJson))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
@@ -169,8 +169,8 @@ func TestUpdatePortfolioConflict(t *testing.T) {
 		UpdatedAt:  &createdAt,
 	}
 
-	porfoliosRepository.EXPECT().GetPortfolioById(portfolioId).Return(portfolio, nil).Once()
-	porfoliosRepository.EXPECT().UpdatePortfolio(portfolio).Return(models.Portfolio{}, repository.ErrPortfolioAlreadyExists).Once()
+	porfoliosRepository.EXPECT().GetPortfolioById(portfolioId).Return(&portfolio, nil).Once()
+	porfoliosRepository.EXPECT().UpdatePortfolio(&portfolio).Return(nil, repository.ErrPortfolioAlreadyExists).Once()
 	bodyJson, _ := json.Marshal(requestBody)
 	req := httptest.NewRequest(http.MethodPut, "/", bytes.NewReader(bodyJson))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)

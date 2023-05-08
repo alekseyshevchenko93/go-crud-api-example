@@ -10,9 +10,9 @@ import (
 
 func NewCreatePortfolioHandler(portfolioService services.PortfolioService) func(echo.Context) error {
 	return func(ctx echo.Context) error {
-		body := requests.CreatePortfolioRequest{}
+		body := &requests.CreatePortfolioRequest{}
 
-		if err := ctx.Bind(&body); err != nil {
+		if err := ctx.Bind(body); err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, "Invalid json body")
 		}
 

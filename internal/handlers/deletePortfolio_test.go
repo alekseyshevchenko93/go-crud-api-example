@@ -22,12 +22,13 @@ func TestDeletePortfolioSuccess(t *testing.T) {
 	portfolioId := 1
 	portfolioIdStr := fmt.Sprintf("%d", portfolioId)
 
-	response := models.Portfolio{
+	portfolio := models.Portfolio{
 		Name:      "Alex",
 		IsActive:  true,
 		IsFinance: true,
 	}
-	porfoliosRepository.EXPECT().GetPortfolioById(portfolioId).Return(response, nil).Once()
+
+	porfoliosRepository.EXPECT().GetPortfolioById(portfolioId).Return(&portfolio, nil).Once()
 	porfoliosRepository.EXPECT().DeletePortfolio(portfolioId).Return(nil).Once()
 	handler := NewDeletePortfolioHandler(portfolioService)
 
@@ -73,7 +74,7 @@ func TestDeletePortfolioNotFound(t *testing.T) {
 	portfolioService := services.NewPortfolioService(porfoliosRepository)
 	portfolioId := 1
 	portfolioIdStr := fmt.Sprintf("%d", portfolioId)
-	porfoliosRepository.EXPECT().GetPortfolioById(portfolioId).Return(models.Portfolio{}, repository.ErrPortfolioNotFound).Once()
+	porfoliosRepository.EXPECT().GetPortfolioById(portfolioId).Return(nil, repository.ErrPortfolioNotFound).Once()
 
 	handler := NewDeletePortfolioHandler(portfolioService)
 	req := httptest.NewRequest(http.MethodDelete, "/", nil)

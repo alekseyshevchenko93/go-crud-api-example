@@ -10,7 +10,7 @@ import (
 
 func NewUpdatePortfolioHandler(portfolioService services.PortfolioService) func(echo.Context) error {
 	return func(ctx echo.Context) error {
-		body := requests.UpdatePortfolioRequest{}
+		body := &requests.UpdatePortfolioRequest{}
 		id := ctx.Param("id")
 
 		if err := ctx.Bind(&body); err != nil {

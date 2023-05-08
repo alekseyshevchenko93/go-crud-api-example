@@ -13,10 +13,10 @@ import (
 )
 
 type PortfolioService interface {
-	CreatePortfolio(requests.CreatePortfolioRequest) (models.Portfolio, error)
-	UpdatePortfolio(string, requests.UpdatePortfolioRequest) (models.Portfolio, error)
-	GetPortfolios() ([]models.Portfolio, error)
-	GetPortfolioById(string) (models.Portfolio, error)
+	CreatePortfolio(*requests.CreatePortfolioRequest) (*models.Portfolio, error)
+	UpdatePortfolio(string, *requests.UpdatePortfolioRequest) (*models.Portfolio, error)
+	GetPortfolios() ([]*models.Portfolio, error)
+	GetPortfolioById(string) (*models.Portfolio, error)
 	DeletePortfolio(string) error
 }
 
@@ -24,25 +24,25 @@ type portfolioService struct {
 	portfolioRepository repository.PortfolioRepository
 }
 
-func (s *portfolioService) CreatePortfolio(body requests.CreatePortfolioRequest) (models.Portfolio, error) {
+func (s *portfolioService) CreatePortfolio(body *requests.CreatePortfolioRequest) (*models.Portfolio, error) {
 	if err := s.validatePortfolioCreateRequest(body); err != nil {
-		return models.Portfolio{}, err
+		return nil, err
 	}
 
 	portfolio, err := s.portfolioRepository.CreatePortfolio(body)
 
 	if err != nil {
 		if errors.Is(err, repository.ErrPortfolioAlreadyExists) {
-			return models.Portfolio{}, echo.NewHTTPError(http.StatusConflict, "Portfolio with this name already exists")
+			return nil, echo.NewHTTPError(http.StatusConflict, "Portfolio with this name already exists")
 		}
 
-		return models.Portfolio{}, err
+		return nil, err
 	}
 
 	return portfolio, nil
 }
 
-func (s *portfolioService) GetPortfolios() ([]models.Portfolio, error) {
+func (s *portfolioService) GetPortfolios() ([]*models.Portfolio, error) {
 	portfolios, err := s.portfolioRepository.GetPortfolios()
 
 	if err != nil {
@@ -52,33 +52,32 @@ func (s *portfolioService) GetPortfolios() ([]models.Portfolio, error) {
 	return portfolios, nil
 }
 
-func (s *portfolioService) GetPortfolioById(id string) (models.Portfolio, error) {
+func (s *portfolioService) GetPortfolioById(id string) (*models.Portfolio, error) {
 	if err := s.validatePortfolioId(id); err != nil {
-		return models.Portfolio{}, err
+		return nil, err
 	}
 
 	idInt, _ := strconv.Atoi(id)
-
 	portfolio, err := s.portfolioRepository.GetPortfolioById(idInt)
 
 	if err != nil {
 		if errors.Is(err, repository.ErrPortfolioNotFound) {
-			return models.Portfolio{}, echo.NewHTTPError(http.StatusNotFound, "Portfolio not found")
+			return nil, echo.NewHTTPError(http.StatusNotFound, "Portfolio not found")
 		}
 
-		return models.Portfolio{}, err
+		return nil, err
 	}
 
 	return portfolio, nil
 }
 
-func (s *portfolioService) UpdatePortfolio(id string, body requests.UpdatePortfolioRequest) (models.Portfolio, error) {
+func (s *portfolioService) UpdatePortfolio(id string, body *requests.UpdatePortfolioRequest) (*models.Portfolio, error) {
 	if err := s.validatePortfolioId(id); err != nil {
-		return models.Portfolio{}, err
+		return nil, err
 	}
 
 	if err := s.validatePortfolioUpdateRequest(id, body); err != nil {
-		return models.Portfolio{}, err
+		return nil, err
 	}
 
 	idInt, _ := strconv.Atoi(id)
@@ -86,10 +85,10 @@ func (s *portfolioService) UpdatePortfolio(id string, body requests.UpdatePortfo
 
 	if err != nil {
 		if errors.Is(err, repository.ErrPortfolioNotFound) {
-			return models.Portfolio{}, echo.NewHTTPError(http.StatusNotFound, "Portfolio not found")
+			return nil, echo.NewHTTPError(http.StatusNotFound, "Portfolio not found")
 		}
 
-		return models.Portfolio{}, err
+		return nil, err
 	}
 
 	portfolio.Name = body.Name
@@ -101,10 +100,10 @@ func (s *portfolioService) UpdatePortfolio(id string, body requests.UpdatePortfo
 
 	if err != nil {
 		if errors.Is(err, repository.ErrPortfolioAlreadyExists) {
-			return models.Portfolio{}, echo.NewHTTPError(http.StatusConflict, "Portfolio with this name already exists")
+			return nil, echo.NewHTTPError(http.StatusConflict, "Portfolio with this name already exists")
 		}
 
-		return models.Portfolio{}, err
+		return nil, err
 	}
 
 	return updatedPortfolio, nil
@@ -133,7 +132,7 @@ func (s *portfolioService) DeletePortfolio(id string) error {
 	return nil
 }
 
-func (s *portfolioService) validatePortfolioCreateRequest(body requests.CreatePortfolioRequest) error {
+func (s *portfolioService) validatePortfolioCreateRequest(body *requests.CreatePortfolioRequest) error {
 	validate := validator.New()
 
 	if err := validate.Struct(body); err != nil {
@@ -144,7 +143,7 @@ func (s *portfolioService) validatePortfolioCreateRequest(body requests.CreatePo
 	return nil
 }
 
-func (s *portfolioService) validatePortfolioUpdateRequest(id string, body requests.UpdatePortfolioRequest) error {
+func (s *portfolioService) validatePortfolioUpdateRequest(id string, body *requests.UpdatePortfolioRequest) error {
 	validate := validator.New()
 
 	if err := validate.Struct(body); err != nil {
