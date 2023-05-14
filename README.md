@@ -9,7 +9,7 @@ Example API built with:
 ## Installation
 Install go dependencies:
 ```
-go mod download
+go mod vendor
 ```
 ## Generate mocks
 Make sure you have mockery installed:
