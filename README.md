@@ -2,7 +2,7 @@
 
 Example API built with:
 - [Echo](https://echo.labstack.com/) as web framework
-- [tesidy](https://github.com/stretchr/testify) for testing
+- [testify](https://github.com/stretchr/testify) for testing
 - [Mockery](https://vektra.github.io/mockery) for mock generation
 - [go-playground/validator](https://github.com/go-playground/validator) for input validation
 
