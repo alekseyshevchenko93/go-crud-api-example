@@ -47,3 +47,5 @@ go.sum
 
 # Exclude any file with a `.swp` extension
 *.swp
+
+.DS_Store
