@@ -9,8 +9,11 @@ import (
 	"github.com/alekseyshevchenko93/go-crud-api-example/internal/domain/requests"
 )
 
+const minPortfolioId = 1
+const maxPortfolioId = 10
+
 func GetRandomName() string {
-	n := rand.Intn(10)
+	n := rand.Intn(maxPortfolioId-minPortfolioId) + minPortfolioId
 	return fmt.Sprintf("portfolio-%d", n)
 }
 
@@ -23,7 +26,7 @@ func GetPortfolio() *models.Portfolio {
 	now := time.Now()
 
 	portfolio := models.Portfolio{
-		Id:         rand.Intn(10),
+		Id:         rand.Intn(maxPortfolioId-minPortfolioId) + minPortfolioId,
 		Name:       GetRandomName(),
 		IsActive:   GetRandomBool(),
 		IsFinance:  GetRandomBool(),
