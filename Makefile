@@ -22,6 +22,9 @@ test:
 docs:
 	rm -rf docs && swag init -g cmd/server/server.go
 
+coverage:
+	go test -coverprofile=coverage.out ./... ;    go tool cover -html=coverage.out
+	
 clean:
 	@echo "Cleaning up..."
 	@rm -rf $(BUILD_DIR)
