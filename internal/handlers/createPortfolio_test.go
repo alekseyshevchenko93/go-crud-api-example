@@ -27,7 +27,7 @@ func TestCreatePortfolioSuite(t *testing.T) {
 	suite.Run(t, new(CreatePortfolioSuite))
 }
 
-func (suite *CreatePortfolioSuite) SetupSuite() {
+func (suite *CreatePortfolioSuite) SetupTest() {
 	t := suite.T()
 	e := echo.New()
 	porftolioRepository := mocks.NewPortfolioRepository(t)

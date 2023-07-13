@@ -26,7 +26,7 @@ func TestDeletePortfolioSuite(t *testing.T) {
 	suite.Run(t, new(DeletePortfolioSuite))
 }
 
-func (suite *DeletePortfolioSuite) SetupSuite() {
+func (suite *DeletePortfolioSuite) SetupTest() {
 	t := suite.T()
 	e := echo.New()
 	porftolioRepository := mocks.NewPortfolioRepository(t)
