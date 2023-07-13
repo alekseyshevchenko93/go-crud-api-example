@@ -11,13 +11,14 @@ import (
 
 type portfolioRepository struct {
 	storage map[int]models.Portfolio
-	counter int
+
 	mu      sync.RWMutex
+	counter int
 }
 
 var (
-	ErrPortfolioNotFound      = errors.New("Portfolio not found")
-	ErrPortfolioAlreadyExists = errors.New("Portfolio already exists")
+	ErrPortfolioNotFound      = errors.New("portfolio not found")
+	ErrPortfolioAlreadyExists = errors.New("portfolio already exists")
 )
 
 //go:generate mockery --name PortfolioRepository
