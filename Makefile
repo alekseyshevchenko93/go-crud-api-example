@@ -16,7 +16,7 @@ run: build
 mocks:
 	mockery --name PortfolioRepository --dir internal/repository --output internal/repository/mocks
 
-tests:
+test:
 	go test ./.../
 
 docs:
