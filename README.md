@@ -27,6 +27,7 @@ make mocks
 ```
 Generate swagger:
 ```
+go install github.com/swaggo/swag/cmd/swag@latest
 make docs
 ```
 ## Environment variables:
