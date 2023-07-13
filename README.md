@@ -25,7 +25,10 @@ Generate mocks:
 ```
 make mocks
 ```
-
+Generate swagger:
+```
+make docs
+```
 ## Environment variables:
 Create .env:
 ```
