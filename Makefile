@@ -3,7 +3,7 @@ SRC=./cmd/server/server.go
 BUILD_DIR=./build
 MOCKERY := mockery
 
-.PHONY: mocks docs
+.PHONY: mocks docs test
 
 build:
 	@echo "Building $(APP_NAME)..."
