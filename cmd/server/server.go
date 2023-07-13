@@ -17,9 +17,8 @@ import (
 	"github.com/swaggo/echo-swagger"
 )
 
-// @title           Swagger Example API
+// @title           Example CRUD API
 // @version         0.1
-// @description     This is a sample server celler server.
 // @termsOfService  http://swagger.io/terms/
 
 // @contact.name   API Support
