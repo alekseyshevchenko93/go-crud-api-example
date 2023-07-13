@@ -8,7 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	requests "github.com/alekseyshevchenko93/go-crud-api-example/internal/domain/requests"
+	"github.com/alekseyshevchenko93/go-crud-api-example/internal/domain/requests"
 	"github.com/alekseyshevchenko93/go-crud-api-example/internal/repository"
 	mocks "github.com/alekseyshevchenko93/go-crud-api-example/internal/repository/mocks"
 	"github.com/alekseyshevchenko93/go-crud-api-example/internal/services"

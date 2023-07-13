@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/alekseyshevchenko93/go-crud-api-example/internal/domain/models"
-	requests "github.com/alekseyshevchenko93/go-crud-api-example/internal/domain/requests"
+	"github.com/alekseyshevchenko93/go-crud-api-example/internal/domain/requests"
 	"github.com/alekseyshevchenko93/go-crud-api-example/internal/repository"
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"

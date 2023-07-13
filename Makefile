@@ -3,7 +3,7 @@ SRC=./cmd/server/server.go
 BUILD_DIR=./build
 MOCKERY := mockery
 
-.PHONY: mocks
+.PHONY: mocks docs
 
 build:
 	@echo "Building $(APP_NAME)..."
@@ -18,6 +18,9 @@ mocks:
 
 tests:
 	go test ./.../
+
+docs:
+	rm -rf docs && swag init -g cmd/server/server.go
 
 clean:
 	@echo "Cleaning up..."

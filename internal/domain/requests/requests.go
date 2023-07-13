@@ -1,4 +1,4 @@
-package domain
+package requests
 
 type CreatePortfolioRequest struct {
 	Name       string `json:"name" validate:"required,lte=20"`
