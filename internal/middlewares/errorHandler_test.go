@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -9,31 +10,49 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestErrorHandler(t *testing.T) {
+func TestErrorHandlerHttpError(t *testing.T) {
 	e := echo.New()
 
-	tt := []struct {
-		Code    int
-		Message string
-	}{
-		{Code: http.StatusBadRequest, Message: "Validation failed"},
-		{Code: http.StatusConflict, Message: "Something already exists"},
-		{Code: http.StatusForbidden, Message: "You dont have permission"},
-		{Code: http.StatusNotFound, Message: "Something not found"},
-		{Code: http.StatusUnauthorized, Message: "Unauthorized"},
-		{Code: http.StatusInternalServerError, Message: "Internal Server Error"},
+	tt := []error{
+		echo.NewHTTPError(http.StatusBadRequest, "Validation failed"),
+		echo.NewHTTPError(http.StatusConflict, "Something already exists"),
+		echo.NewHTTPError(http.StatusForbidden, "You dont have permission"),
+		echo.NewHTTPError(http.StatusNotFound, "Something not found"),
+		echo.NewHTTPError(http.StatusUnauthorized, "Unauthorized"),
+		echo.NewHTTPError(http.StatusInternalServerError, "Internal Server Error"),
 	}
 
-	for _, testcase := range tt {
+	for _, testcaseErr := range tt {
 		req := httptest.NewRequest(http.MethodGet, "/any-route", nil)
 		rec := httptest.NewRecorder()
 		ctx := e.NewContext(req, rec)
 
-		err := echo.NewHTTPError(testcase.Code, testcase.Message)
+		ErrorHandler(testcaseErr, ctx)
 
-		ErrorHandler(err, ctx)
+		err, ok := testcaseErr.(*echo.HTTPError)
 
-		assert.Equal(t, rec.Code, testcase.Code)
-		assert.Contains(t, rec.Body.String(), testcase.Message)
+		assert.True(t, ok)
+		assert.Equal(t, rec.Code, err.Code)
+		assert.Contains(t, rec.Body.String(), err.Message)
+	}
+}
+
+func TestErrorHandlerNonHttpError(t *testing.T) {
+	e := echo.New()
+
+	tt := []error{
+		errors.New("some bullshit happened"),
+		errors.New("1"),
+	}
+
+	for _, testcaseErr := range tt {
+		req := httptest.NewRequest(http.MethodGet, "/any-route", nil)
+		rec := httptest.NewRecorder()
+		ctx := e.NewContext(req, rec)
+
+		ErrorHandler(testcaseErr, ctx)
+
+		assert.Equal(t, rec.Code, http.StatusInternalServerError)
+		assert.Contains(t, rec.Body.String(), "Internal Server Error")
 	}
 }
