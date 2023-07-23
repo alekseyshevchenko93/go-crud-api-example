@@ -83,8 +83,12 @@ func (suite *UpdatePortfolioSuite) TestUpdatePortfolioBadRequests() {
 
 	tt := []struct {
 		ParamId string
-		Body    requests.UpdatePortfolioRequest
+		Body    interface{}
 	}{
+		{
+			ParamId: "1",
+			Body:    "invalid json body",
+		},
 		{
 			ParamId: "1",
 			Body:    requests.UpdatePortfolioRequest{Id: 1, Name: ""},

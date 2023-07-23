@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -54,4 +55,20 @@ func (suite *GetPortfoliosSuite) TestGetPortfolios() {
 
 	r.NoError(err)
 	r.Contains(rec.Body.String(), string(portfoliosJson))
+}
+
+func (suite *GetPortfoliosSuite) TestGetPortfoliosInternalServerError() {
+	r := suite.Require()
+	repoErr := errors.New("some error from repo")
+	handler := NewGetPortfoliosHandler(suite.portfolioService)
+	suite.portfolioRepository.EXPECT().GetPortfolios().Return(nil, repoErr).Once()
+
+	req := httptest.NewRequest(http.MethodGet, "/", nil)
+	rec := httptest.NewRecorder()
+	ctx := suite.e.NewContext(req, rec)
+
+	err := handler(ctx)
+
+	r.Error(err)
+	r.True(errors.Is(err, repoErr))
 }

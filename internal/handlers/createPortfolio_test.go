@@ -66,9 +66,10 @@ func (suite *CreatePortfolioSuite) TestCreatePortfolioBadRequests() {
 	r := suite.Require()
 	handler := NewCreatePortfolioHandler(suite.portfolioService)
 
-	tt := []*requests.CreatePortfolioRequest{
-		{Name: ""},
-		{Name: "here-should-be-20-symbols", IsActive: true, IsFinance: false, IsInternal: false},
+	tt := []interface{}{
+		&requests.CreatePortfolioRequest{Name: ""},
+		&requests.CreatePortfolioRequest{Name: "here-should-be-20-symbols", IsActive: true, IsFinance: false, IsInternal: false},
+		"invalid json body",
 	}
 
 	for _, body := range tt {

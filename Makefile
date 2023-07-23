@@ -17,7 +17,7 @@ mocks:
 	mockery --name PortfolioRepository --dir internal/repository --output internal/repository/mocks
 
 test:
-	go test ./.../
+	go test -race -v  ./.../
 
 docs:
 	rm -rf docs && swag init -g cmd/server/server.go
