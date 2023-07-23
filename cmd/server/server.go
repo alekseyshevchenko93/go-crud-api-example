@@ -3,18 +3,19 @@ package main
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
 	_ "github.com/alekseyshevchenko93/go-crud-api-example/docs"
-	"github.com/alekseyshevchenko93/go-crud-api-example/internal/config"
 	"github.com/alekseyshevchenko93/go-crud-api-example/internal/handlers"
 	"github.com/alekseyshevchenko93/go-crud-api-example/internal/middlewares"
 	"github.com/alekseyshevchenko93/go-crud-api-example/internal/repository"
 	"github.com/alekseyshevchenko93/go-crud-api-example/internal/services"
+	_ "github.com/joho/godotenv/autoload"
 	"github.com/labstack/echo/v4"
-	"github.com/swaggo/echo-swagger"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 // @title           Example CRUD API
@@ -37,12 +38,6 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP)
 	defer stop()
 
-	appConfig, err := config.LoadConfig()
-
-	if err != nil {
-		panic(err)
-	}
-
 	e := echo.New()
 
 	e.HTTPErrorHandler = middlewares.ErrorHandler
@@ -59,15 +54,15 @@ func main() {
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	go func() {
-		address := fmt.Sprintf(":%s", appConfig.HttpPort)
+		httpPort := os.Getenv("HTTP_PORT")
+		address := fmt.Sprintf(":%s", httpPort)
 
-		if err := e.Start(address); err != nil {
+		if err := e.Start(address); err != nil && err != http.ErrServerClosed {
 			panic(err)
 		}
 	}()
 
-	select {
-	case <-ctx.Done():
-		os.Exit(0)
-	}
+	<-ctx.Done()
+
+	os.Exit(0)
 }

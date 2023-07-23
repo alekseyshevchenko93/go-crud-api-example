@@ -21,7 +21,6 @@
 # *.so
 
 # Generated files
-go.sum
 *.pb.go
 
 # Ignore binary built with `go build` and  `go install` (remove the comment below to include it)
@@ -51,3 +50,4 @@ go.sum
 .DS_Store
 
 build/
+bin/

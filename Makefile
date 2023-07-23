@@ -1,9 +1,9 @@
 APP_NAME=crud-api
 SRC=./cmd/server/server.go
-BUILD_DIR=./build
+BUILD_DIR=./bin
 MOCKERY := mockery
 
-.PHONY: mocks docs test
+.PHONY: build build-prod mocks docs test
 
 build:
 	@echo "Building $(APP_NAME)..."
