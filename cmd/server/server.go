@@ -15,6 +15,8 @@ import (
 	"github.com/alekseyshevchenko93/go-crud-api-example/internal/services"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/gommon/log"
 	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
@@ -41,6 +43,10 @@ func main() {
 	e := echo.New()
 
 	e.HTTPErrorHandler = middlewares.ErrorHandler
+	e.Use(middleware.RecoverWithConfig(middleware.RecoverConfig{
+		StackSize: 1 << 10, // 1 KB
+		LogLevel:  log.ERROR,
+	}))
 
 	portfolioRepository := repository.NewPortfolioRepository()
 	portfolioService := services.NewPortfolioService(portfolioRepository)
